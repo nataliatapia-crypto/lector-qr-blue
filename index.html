@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro QR Hub</title>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background:#f4f7fb;
+      margin:0;
+      padding:20px;
+    }
+
+    .container{
+      max-width:800px;
+      margin:auto;
+      background:#fff;
+      padding:20px;
+      border-radius:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,.1);
+    }
+
+    h1{
+      margin-top:0;
+    }
+
+    select, button{
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border-radius:10px;
+      border:none;
+      font-weight:bold;
+    }
+
+    button{
+      background:#0b2a4a;
+      color:white;
+      cursor:pointer;
+    }
+
+    #reader{
+      margin-top:20px;
+    }
+
+    .status{
+      margin-top:20px;
+      padding:15px;
+      border-radius:10px;
+    }
+
+    .ok{ background:#e8f7f1; }
+    .error{ background:#fdecec; }
+    .warn{ background:#fff4e5; }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Registro QR</h1>
+
+  <label>Selecciona Hub</label>
+  <select id="hubSelect"></select>
+  <button onclick="confirmHub()">Confirmar hub</button>
+
+  <p id="hubSelected">Hub no definido</p>
+
+  <div id="reader"></div>
+
+  <button onclick="startScanner()">Iniciar escáner</button>
+  <button onclick="stopScanner()">Detener escáner</button>
+
+  <div id="status" class="status"></div>
+
+</div>
+
+<script>
+
+const APPS_SCRIPT_URL = "PEGA_AQUI_TU_URL"; // 🔥 CAMBIAR
+
+let scanner = null;
+let hubSeleccionado = "";
+let isScanning = false;
+let isProcessing = false;
+
+// ==========================
+// CARGAR HUBS
+// ==========================
+async function cargarHubs(){
+  try{
+    const res = await fetch(APPS_SCRIPT_URL);
+    const data = await res.json();
+
+    const select = document.getElementById("hubSelect");
+    select.innerHTML = '<option value="">Selecciona un hub</option>';
+
+    data.hubs.forEach(h => {
+      const opt = document.createElement("option");
+      opt.value = h;
+      opt.textContent = h;
+      select.appendChild(opt);
+    });
+
+  }catch(err){
+    setStatus("error","Error cargando hubs");
+  }
+}
+
+// ==========================
+// CONFIRMAR HUB
+// ==========================
+function confirmHub(){
+  const value = document.getElementById("hubSelect").value;
+
+  if(!value){
+    setStatus("warn","Debes seleccionar un hub");
+    return;
+  }
+
+  hubSeleccionado = value;
+  document.getElementById("hubSelected").innerText = "Hub: " + value;
+
+  document.getElementById("hubSelect").disabled = true;
+
+  setStatus("ok","Hub confirmado");
+}
+
+// ==========================
+// ESCÁNER
+// ==========================
+async function startScanner(){
+
+  if(!hubSeleccionado){
+    setStatus("warn","Selecciona hub primero");
+    return;
+  }
+
+  if(isScanning) return;
+
+  try{
+    scanner = new Html5Qrcode("reader");
+
+    const cameras = await Html5Qrcode.getCameras();
+
+    if(!cameras.length){
+      setStatus("error","No hay cámaras");
+      return;
+    }
+
+    await scanner.start(
+      cameras[0].id,
+      { fps:10, qrbox:250 },
+      onScan
+    );
+
+    isScanning = true;
+
+  }catch(err){
+    setStatus("error", err.message);
+  }
+}
+
+// ==========================
+async function stopScanner(){
+  if(scanner){
+    await scanner.stop();
+    scanner.clear();
+    isScanning = false;
+  }
+}
+
+// ==========================
+// CUANDO LEE QR
+// ==========================
+async function onScan(text){
+
+  if(isProcessing) return;
+  isProcessing = true;
+
+  try{
+    await stopScanner();
+
+    const url = new URL(text);
+    const params = new URLSearchParams(url.search);
+
+    const rut = params.get("rut");
+    const nombre = params.get("nombre");
+    const ruta = params.get("ruta");
+
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method:"POST",
+      headers:{
+        "Content-Type":"text/plain;charset=utf-8"
+      },
+      body: JSON.stringify({
+        hub: hubSeleccionado,
+        rut,
+        nombre,
+        ruta
+      })
+    });
+
+    const result = await response.json();
+
+    setStatus(result.status, result.message);
+
+  }catch(err){
+    setStatus("error","QR inválido");
+  }
+
+  setTimeout(()=>{ isProcessing=false; },1500);
+}
+
+// ==========================
+function setStatus(type,msg){
+  const el = document.getElementById("status");
+  el.className = "status " + type;
+  el.innerText = msg;
+}
+
+// ==========================
+cargarHubs();
+
+</script>
+
+</body>
+</html>
