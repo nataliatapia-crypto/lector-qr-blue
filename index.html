@@ -1,233 +1,225 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registro QR Hub</title>
-
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-
   <style>
-    body{
-      font-family: Arial, sans-serif;
-      background:#f4f7fb;
-      margin:0;
-      padding:20px;
-    }
-
-    .container{
-      max-width:800px;
-      margin:auto;
-      background:#fff;
-      padding:20px;
-      border-radius:16px;
-      box-shadow:0 10px 30px rgba(0,0,0,.1);
-    }
-
-    h1{
-      margin-top:0;
-    }
-
-    select, button{
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      border-radius:10px;
-      border:none;
-      font-weight:bold;
-    }
-
-    button{
-      background:#0b2a4a;
-      color:white;
-      cursor:pointer;
-    }
-
-    #reader{
-      margin-top:20px;
-    }
-
-    .status{
-      margin-top:20px;
-      padding:15px;
-      border-radius:10px;
-    }
-
-    .ok{ background:#e8f7f1; }
-    .error{ background:#fdecec; }
-    .warn{ background:#fff4e5; }
-
+    body{font-family:Arial,sans-serif;background:#f4f7fb;margin:0;padding:20px}
+    .container{max-width:900px;margin:auto;background:#fff;padding:24px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+    h1{margin-top:0}
+    label{display:block;margin:18px 0 8px;font-weight:700}
+    select,button{width:100%;padding:14px;border:none;border-radius:12px;font-weight:700;font-size:16px}
+    select{background:#eef3f8}
+    button{background:#0b2a4a;color:#fff;cursor:pointer;margin-top:12px}
+    #reader{margin-top:20px;min-height:260px}
+    .status{margin-top:20px;padding:18px;border-radius:12px}
+    .ok{background:#e8f7f1}
+    .error{background:#fdecec}
+    .warn{background:#fff4e5}
+    .muted{color:#6b7280}
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Registro QR</h1>
 
-<div class="container">
+    <label for="hubSelect">Selecciona Hub</label>
+    <select id="hubSelect">
+      <option value="">Cargando hubs...</option>
+    </select>
 
-  <h1>Registro QR</h1>
+    <button id="btnConfirmHub">Confirmar hub</button>
 
-  <label>Selecciona Hub</label>
-  <select id="hubSelect"></select>
-  <button onclick="confirmHub()">Confirmar hub</button>
+    <p id="hubSelected">Hub no definido</p>
 
-  <p id="hubSelected">Hub no definido</p>
+    <div id="reader"></div>
 
-  <div id="reader"></div>
+    <button id="btnStart">Iniciar escáner</button>
+    <button id="btnStop">Detener escáner</button>
 
-  <button onclick="startScanner()">Iniciar escáner</button>
-  <button onclick="stopScanner()">Detener escáner</button>
+    <div id="status" class="status muted">Esperando acción...</div>
+  </div>
 
-  <div id="status" class="status"></div>
+  <script>
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPXCRbbJB3eC2DLP3QLEEDMDccMCFBTmB6ncMBbSnOgk5s4xnObefk2auRV8i50VQB/exec";
 
-</div>
+    let scanner = null;
+    let hubSeleccionado = "";
+    let isScanning = false;
+    let isProcessing = false;
 
-<script>
+    const hubSelect = document.getElementById("hubSelect");
+    const hubSelected = document.getElementById("hubSelected");
+    const statusEl = document.getElementById("status");
 
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPXCRbbJB3eC2DLP3QLEEDMDccMCFBTmB6ncMBbSnOgk5s4xnObefk2auRV8i50VQB/exec"; // 🔥 CAMBIAR
+    document.getElementById("btnConfirmHub").addEventListener("click", confirmHub);
+    document.getElementById("btnStart").addEventListener("click", startScanner);
+    document.getElementById("btnStop").addEventListener("click", stopScanner);
 
-let scanner = null;
-let hubSeleccionado = "";
-let isScanning = false;
-let isProcessing = false;
-
-// ==========================
-// CARGAR HUBS
-// ==========================
-async function cargarHubs(){
-  try{
-    const res = await fetch(APPS_SCRIPT_URL);
-    const data = await res.json();
-
-    const select = document.getElementById("hubSelect");
-    select.innerHTML = '<option value="">Selecciona un hub</option>';
-
-    data.hubs.forEach(h => {
-      const opt = document.createElement("option");
-      opt.value = h;
-      opt.textContent = h;
-      select.appendChild(opt);
-    });
-
-  }catch(err){
-    setStatus("error","Error cargando hubs");
-  }
-}
-
-// ==========================
-// CONFIRMAR HUB
-// ==========================
-function confirmHub(){
-  const value = document.getElementById("hubSelect").value;
-
-  if(!value){
-    setStatus("warn","Debes seleccionar un hub");
-    return;
-  }
-
-  hubSeleccionado = value;
-  document.getElementById("hubSelected").innerText = "Hub: " + value;
-
-  document.getElementById("hubSelect").disabled = true;
-
-  setStatus("ok","Hub confirmado");
-}
-
-// ==========================
-// ESCÁNER
-// ==========================
-async function startScanner(){
-
-  if(!hubSeleccionado){
-    setStatus("warn","Selecciona hub primero");
-    return;
-  }
-
-  if(isScanning) return;
-
-  try{
-    scanner = new Html5Qrcode("reader");
-
-    const cameras = await Html5Qrcode.getCameras();
-
-    if(!cameras.length){
-      setStatus("error","No hay cámaras");
-      return;
+    function setStatus(type, msg) {
+      statusEl.className = "status " + type;
+      statusEl.textContent = msg;
     }
 
-    await scanner.start(
-      cameras[0].id,
-      { fps:10, qrbox:250 },
-      onScan
-    );
+    async function cargarHubs() {
+      try {
+        setStatus("warn", "Cargando hubs...");
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: "GET",
+          mode: "cors",
+          redirect: "follow"
+        });
 
-    isScanning = true;
+        const text = await response.text();
 
-  }catch(err){
-    setStatus("error", err.message);
-  }
-}
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (parseErr) {
+          console.error("Respuesta no JSON:", text);
+          throw new Error("La respuesta del backend no es JSON. Revisa la URL del Web App o la implementación.");
+        }
 
-// ==========================
-async function stopScanner(){
-  if(scanner){
-    await scanner.stop();
-    scanner.clear();
-    isScanning = false;
-  }
-}
+        if (!data.ok || !Array.isArray(data.hubs)) {
+          console.error("Respuesta backend:", data);
+          throw new Error(data.message || "No llegaron hubs válidos.");
+        }
 
-// ==========================
-// CUANDO LEE QR
-// ==========================
-async function onScan(text){
+        hubSelect.innerHTML = '<option value="">Selecciona un hub</option>';
+        data.hubs.forEach(h => {
+          const opt = document.createElement("option");
+          opt.value = h;
+          opt.textContent = h;
+          hubSelect.appendChild(opt);
+        });
 
-  if(isProcessing) return;
-  isProcessing = true;
+        setStatus("ok", "Hubs cargados correctamente.");
+      } catch (err) {
+        console.error("Error cargando hubs:", err);
+        setStatus("error", "Error cargando hubs: " + err.message);
+      }
+    }
 
-  try{
-    await stopScanner();
+    function confirmHub() {
+      const value = hubSelect.value;
+      if (!value) {
+        setStatus("warn", "Debes seleccionar un hub.");
+        return;
+      }
+      hubSeleccionado = value;
+      hubSelected.textContent = "Hub: " + value;
+      hubSelect.disabled = true;
+      setStatus("ok", "Hub confirmado: " + value);
+    }
 
-    const url = new URL(text);
-    const params = new URLSearchParams(url.search);
+    async function startScanner() {
+      if (!hubSeleccionado) {
+        setStatus("warn", "Selecciona y confirma un hub primero.");
+        return;
+      }
 
-    const rut = params.get("rut");
-    const nombre = params.get("nombre");
-    const ruta = params.get("ruta");
+      if (isScanning) return;
 
-    const response = await fetch(APPS_SCRIPT_URL, {
-      method:"POST",
-      headers:{
-        "Content-Type":"text/plain;charset=utf-8"
-      },
-      body: JSON.stringify({
-        hub: hubSeleccionado,
-        rut,
-        nombre,
-        ruta
-      })
-    });
+      try {
+        scanner = new Html5Qrcode("reader");
+        const cameras = await Html5Qrcode.getCameras();
 
-    const result = await response.json();
+        if (!cameras.length) {
+          setStatus("error", "No se detectaron cámaras.");
+          return;
+        }
 
-    setStatus(result.status, result.message);
+        await scanner.start(
+          cameras[0].id,
+          { fps: 10, qrbox: 250 },
+          onScanSuccess
+        );
 
-  }catch(err){
-    setStatus("error","QR inválido");
-  }
+        isScanning = true;
+        setStatus("ok", "Escáner iniciado.");
+      } catch (err) {
+        console.error("Error escáner:", err);
+        setStatus("error", "No fue posible iniciar cámara: " + (err.message || err));
+      }
+    }
 
-  setTimeout(()=>{ isProcessing=false; },1500);
-}
+    async function stopScanner() {
+      try {
+        if (scanner && isScanning) {
+          await scanner.stop();
+          await scanner.clear();
+        }
+      } catch (err) {
+        console.error("Error deteniendo escáner:", err);
+      } finally {
+        scanner = null;
+        isScanning = false;
+        setStatus("warn", "Escáner detenido.");
+      }
+    }
 
-// ==========================
-function setStatus(type,msg){
-  const el = document.getElementById("status");
-  el.className = "status " + type;
-  el.innerText = msg;
-}
+    async function onScanSuccess(text) {
+      if (isProcessing) return;
+      isProcessing = true;
 
-// ==========================
-cargarHubs();
+      try {
+        await stopScanner();
 
-</script>
+        const url = new URL(text);
+        const params = new URLSearchParams(url.search);
 
+        const rut = (params.get("rut") || "").trim();
+        const nombre = (params.get("nombre") || "").trim();
+        const ruta = (params.get("ruta") || "").trim();
+
+        if (!rut || !nombre || !ruta) {
+          throw new Error("El QR no trae rut, nombre o ruta.");
+        }
+
+        setStatus("warn", "Procesando registro...");
+
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          mode: "cors",
+          redirect: "follow",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify({
+            hub: hubSeleccionado,
+            rut,
+            nombre,
+            ruta
+          })
+        });
+
+        const textResp = await response.text();
+
+        let result;
+        try {
+          result = JSON.parse(textResp);
+        } catch (parseErr) {
+          console.error("Respuesta POST no JSON:", textResp);
+          throw new Error("La respuesta del registro no es JSON.");
+        }
+
+        setStatus(
+          result.status === "success" ? "ok" :
+          result.status === "duplicate" ? "warn" : "error",
+          result.message || "Respuesta sin mensaje."
+        );
+
+      } catch (err) {
+        console.error("Error procesando QR:", err);
+        setStatus("error", "Error procesando QR: " + err.message);
+      } finally {
+        setTimeout(() => { isProcessing = false; }, 1200);
+      }
+    }
+
+    cargarHubs();
+  </script>
 </body>
 </html>
