@@ -43,7 +43,7 @@
   </div>
 
   <script>
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPXCRbbJB3eC2DLP3QLEEDMDccMCFBTmB6ncMBbSnOgk5s4xnObefk2auRV8i50VQB/exec";
+    const APPS_SCRIPT_URL = "PEGA_AQUI_LA_URL_NUEVA_DEL_WEBAPP";
 
     let scanner = null;
     let hubSeleccionado = "";
@@ -63,27 +63,40 @@
       statusEl.textContent = msg;
     }
 
+    function jsonp(url) {
+      return new Promise((resolve, reject) => {
+        const callbackName = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
+        const script = document.createElement("script");
+
+        window[callbackName] = function(data) {
+          resolve(data);
+          cleanup();
+        };
+
+        function cleanup() {
+          delete window[callbackName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+        }
+
+        script.onerror = function() {
+          cleanup();
+          reject(new Error("No fue posible conectar con Apps Script."));
+        };
+
+        const separator = url.includes("?") ? "&" : "?";
+        script.src = `${url}${separator}callback=${callbackName}`;
+
+        document.body.appendChild(script);
+      });
+    }
+
     async function cargarHubs() {
       try {
         setStatus("warn", "Cargando hubs...");
-        const response = await fetch(APPS_SCRIPT_URL, {
-          method: "GET",
-          mode: "cors",
-          redirect: "follow"
-        });
 
-        const text = await response.text();
-
-        let data;
-        try {
-          data = JSON.parse(text);
-        } catch (parseErr) {
-          console.error("Respuesta no JSON:", text);
-          throw new Error("La respuesta del backend no es JSON. Revisa la URL del Web App o la implementación.");
-        }
+        const data = await jsonp(`${APPS_SCRIPT_URL}?action=hubs`);
 
         if (!data.ok || !Array.isArray(data.hubs)) {
-          console.error("Respuesta backend:", data);
           throw new Error(data.message || "No llegaron hubs válidos.");
         }
 
@@ -97,7 +110,7 @@
 
         setStatus("ok", "Hubs cargados correctamente.");
       } catch (err) {
-        console.error("Error cargando hubs:", err);
+        console.error(err);
         setStatus("error", "Error cargando hubs: " + err.message);
       }
     }
@@ -108,6 +121,7 @@
         setStatus("warn", "Debes seleccionar un hub.");
         return;
       }
+
       hubSeleccionado = value;
       hubSelected.textContent = "Hub: " + value;
       hubSelect.disabled = true;
@@ -140,7 +154,7 @@
         isScanning = true;
         setStatus("ok", "Escáner iniciado.");
       } catch (err) {
-        console.error("Error escáner:", err);
+        console.error(err);
         setStatus("error", "No fue posible iniciar cámara: " + (err.message || err));
       }
     }
@@ -152,7 +166,7 @@
           await scanner.clear();
         }
       } catch (err) {
-        console.error("Error deteniendo escáner:", err);
+        console.error(err);
       } finally {
         scanner = null;
         isScanning = false;
@@ -180,30 +194,15 @@
 
         setStatus("warn", "Procesando registro...");
 
-        const response = await fetch(APPS_SCRIPT_URL, {
-          method: "POST",
-          mode: "cors",
-          redirect: "follow",
-          headers: {
-            "Content-Type": "text/plain;charset=utf-8"
-          },
-          body: JSON.stringify({
-            hub: hubSeleccionado,
-            rut,
-            nombre,
-            ruta
-          })
+        const qs = new URLSearchParams({
+          action: "register",
+          hub: hubSeleccionado,
+          rut,
+          nombre,
+          ruta
         });
 
-        const textResp = await response.text();
-
-        let result;
-        try {
-          result = JSON.parse(textResp);
-        } catch (parseErr) {
-          console.error("Respuesta POST no JSON:", textResp);
-          throw new Error("La respuesta del registro no es JSON.");
-        }
+        const result = await jsonp(`${APPS_SCRIPT_URL}?${qs.toString()}`);
 
         setStatus(
           result.status === "success" ? "ok" :
@@ -212,7 +211,7 @@
         );
 
       } catch (err) {
-        console.error("Error procesando QR:", err);
+        console.error(err);
         setStatus("error", "Error procesando QR: " + err.message);
       } finally {
         setTimeout(() => { isProcessing = false; }, 1200);
