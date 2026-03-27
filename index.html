@@ -39,67 +39,63 @@
       background:
         linear-gradient(90deg, rgba(24,177,233,.82) 0%, rgba(13,72,193,.88) 58%, rgba(126,80,170,.62) 100%),
         url("https://drive.google.com/uc?export=view&id=10_Rh1eQBghbUdX9L58m4p6N4Cuk3niFU") center center / cover no-repeat fixed;
-      padding:32px 20px;
+      padding:24px 18px;
     }
 
     .page{
       max-width:1200px;
       margin:0 auto;
       display:grid;
-      grid-template-columns: 1.08fr 0.92fr;
-      gap:28px;
-      align-items:stretch;
-      min-height:calc(100vh - 64px);
+      grid-template-columns: 1.05fr 0.95fr;
+      gap:24px;
+      align-items:center;
+      min-height:calc(100vh - 48px);
     }
 
     .hero{
       display:flex;
       flex-direction:column;
       justify-content:space-between;
-      padding:20px 10px 20px 6px;
       color:#fff;
+      padding:8px 8px 8px 0;
     }
 
-    .brand{
+    .topbar{
       display:flex;
       align-items:center;
       gap:14px;
-      margin-bottom:22px;
+      margin-bottom:24px;
     }
 
-    .brand-mark{
-      width:62px;
-      height:62px;
-      border-radius:18px;
-      background:rgba(255,255,255,.12);
+    .brand{
+      width:168px;
+      min-width:168px;
+      height:72px;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:34px;
-      font-weight:800;
+      background:rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.16);
-      backdrop-filter: blur(4px);
+      border-radius:18px;
+      backdrop-filter: blur(6px);
+      padding:10px 14px;
     }
 
-    .brand-text{
-      line-height:1.05;
-    }
-
-    .brand-text strong{
+    .brand img{
+      max-width:100%;
+      max-height:100%;
+      object-fit:contain;
       display:block;
-      font-size:38px;
-      font-weight:800;
-      letter-spacing:-1px;
     }
 
-    .brand-text span{
-      font-size:16px;
-      opacity:.92;
-      font-weight:700;
+    .topbar-title{
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.2px;
+      color:#fff;
     }
 
     .hero-copy{
-      margin-top:34px;
       max-width:560px;
     }
 
@@ -117,32 +113,32 @@
     }
 
     .hero h1{
-      margin:0 0 14px;
-      font-size:56px;
+      margin:0 0 12px;
+      font-size:54px;
       line-height:0.98;
-      letter-spacing:-1.8px;
+      letter-spacing:-1.7px;
     }
 
     .hero p{
       margin:0;
       max-width:500px;
-      font-size:21px;
+      font-size:20px;
       line-height:1.45;
       color:rgba(255,255,255,.96);
     }
 
     .hero-foot{
       display:flex;
-      gap:14px;
+      gap:12px;
       flex-wrap:wrap;
-      margin-top:34px;
+      margin-top:28px;
     }
 
     .pill{
       background:rgba(255,255,255,.12);
       border:1px solid rgba(255,255,255,.18);
       color:#fff;
-      padding:12px 16px;
+      padding:11px 15px;
       border-radius:999px;
       font-size:14px;
       font-weight:700;
@@ -150,12 +146,11 @@
     }
 
     .card{
-      background:rgba(255,255,255,.94);
-      border:1px solid rgba(255,255,255,.65);
+      background:rgba(255,255,255,.95);
+      border:1px solid rgba(255,255,255,.7);
       border-radius:var(--radius-xl);
       box-shadow:var(--shadow);
-      padding:24px;
-      align-self:center;
+      padding:22px;
       backdrop-filter: blur(10px);
     }
 
@@ -164,12 +159,12 @@
       align-items:center;
       justify-content:space-between;
       gap:16px;
-      margin-bottom:18px;
+      margin-bottom:12px;
     }
 
     .card-title{
       margin:0;
-      font-size:34px;
+      font-size:32px;
       line-height:1;
       letter-spacing:-1px;
       color:var(--blue-dark);
@@ -186,14 +181,14 @@
     }
 
     .subtext{
-      margin:0 0 20px;
+      margin:0 0 16px;
       color:var(--muted);
-      font-size:15px;
+      font-size:14px;
       line-height:1.5;
     }
 
     .section{
-      margin-bottom:18px;
+      margin-bottom:14px;
     }
 
     .label{
@@ -202,11 +197,6 @@
       font-weight:800;
       color:var(--blue-dark);
       font-size:15px;
-    }
-
-    .field-row{
-      display:flex;
-      gap:10px;
     }
 
     .select-wrap{
@@ -244,6 +234,14 @@
       box-shadow:0 0 0 4px rgba(43,118,255,.12);
     }
 
+    .hub-selection{
+      transition:.25s ease;
+    }
+
+    .hub-selection.hidden{
+      display:none;
+    }
+
     .hub-button-row{
       display:flex;
       gap:10px;
@@ -276,11 +274,19 @@
     }
 
     .hub-display{
-      margin-top:14px;
+      display:none;
+      margin:10px 0 14px;
       background:linear-gradient(180deg,#eef5ff,#f7faff);
       border:1px solid #dbe7fb;
       border-radius:18px;
-      padding:16px;
+      padding:14px 16px;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .hub-display.show{
+      display:flex;
     }
 
     .hub-display small{
@@ -290,28 +296,38 @@
       letter-spacing:.5px;
       color:#6c84a8;
       text-transform:uppercase;
-      margin-bottom:6px;
+      margin-bottom:4px;
     }
 
     .hub-value{
-      font-size:24px;
+      font-size:22px;
       font-weight:900;
       color:var(--blue-dark);
       letter-spacing:-.5px;
     }
 
+    .hub-state{
+      background:var(--success);
+      color:#fff;
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
     .scanner-shell{
-      margin-top:18px;
+      margin-top:10px;
       border-radius:22px;
       overflow:hidden;
       background:#f7faff;
       border:1px solid #e3ebf8;
-      padding:16px;
+      padding:14px;
     }
 
     #reader{
       width:100%;
-      min-height:280px;
+      min-height:250px;
       border-radius:18px;
       overflow:hidden;
       background:
@@ -330,7 +346,7 @@
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:12px;
-      margin-top:16px;
+      margin-top:14px;
     }
 
     .toast{
@@ -387,9 +403,9 @@
     }
 
     .status-panel{
-      margin-top:16px;
+      margin-top:14px;
       border-radius:18px;
-      padding:16px;
+      padding:14px 16px;
       font-size:14px;
       line-height:1.5;
       border:1px solid var(--line);
@@ -427,13 +443,10 @@
       }
       .hero{
         min-height:auto;
-        padding:8px 0 0;
+        padding:4px 0 0;
       }
       .hero h1{
-        font-size:44px;
-      }
-      .card{
-        padding:20px;
+        font-size:42px;
       }
     }
 
@@ -442,7 +455,7 @@
         padding:14px;
       }
       .hero h1{
-        font-size:36px;
+        font-size:34px;
       }
       .card-title{
         font-size:28px;
@@ -456,6 +469,10 @@
         min-width:auto;
         max-width:none;
       }
+      .hub-display{
+        flex-direction:column;
+        align-items:flex-start;
+      }
     }
   </style>
 </head>
@@ -463,20 +480,22 @@
   <div class="page">
     <section class="hero">
       <div>
-        <div class="brand">
-          <div class="brand-mark">B</div>
-          <div class="brand-text">
-            <strong>Blue</strong>
-            <span>express COPEC</span>
+        <header class="topbar">
+          <div class="brand">
+            <img
+              src="https://lh3.googleusercontent.com/d/1mGJb6w6nJ-nxW3LwO0_Cts-YyDbyw4wS"
+              alt="Blue Express"
+              onerror="this.style.display='none';"
+            />
           </div>
-        </div>
+          <div class="topbar-title">Portal Operario</div>
+        </header>
 
         <div class="hero-copy">
           <div class="eyebrow">REGISTRO DE INGRESO · HUBS</div>
           <h1>Escanea y registra tu operación</h1>
           <p>
-            Selecciona el hub, confirma la atención y registra el ingreso del courier
-            escaneando su código QR.
+            Selecciona el hub una sola vez, confírmalo y luego trabaja directo con el lector QR.
           </p>
         </div>
       </div>
@@ -495,10 +514,10 @@
       </div>
 
       <p class="subtext">
-        Confirma el hub de atención y luego inicia el lector. El sistema validará la ruta y evitará registros duplicados.
+        Confirma el hub y luego escanea el QR del courier. La confirmación inicial desaparece para dejar visible el lector.
       </p>
 
-      <div class="section">
+      <div id="hubSelection" class="hub-selection section">
         <label class="label" for="hubSelect">Selecciona Hub</label>
         <div class="select-wrap">
           <select id="hubSelect">
@@ -509,17 +528,20 @@
         <div class="hub-button-row">
           <button id="btnConfirmHub" class="btn-primary">Confirmar hub</button>
         </div>
+      </div>
 
-        <div class="hub-display">
+      <div id="hubDisplay" class="hub-display">
+        <div>
           <small>Hub de atención</small>
           <div id="hubSelected" class="hub-value">Hub no definido</div>
         </div>
+        <div class="hub-state">Confirmado</div>
       </div>
 
       <div class="scanner-shell">
         <div id="reader"></div>
         <div class="reader-note">
-          Usa la cámara para leer el QR del courier. Si el registro fue exitoso, la alerta aparecerá arriba y desaparecerá sola.
+          El lector queda disponible inmediatamente después de confirmar el hub.
         </div>
       </div>
 
@@ -548,6 +570,8 @@
 
     const hubSelect = document.getElementById("hubSelect");
     const hubSelected = document.getElementById("hubSelected");
+    const hubSelection = document.getElementById("hubSelection");
+    const hubDisplay = document.getElementById("hubDisplay");
     const statusEl = document.getElementById("status");
     const toastEl = document.getElementById("toast");
     const toastTitleEl = document.getElementById("toastTitle");
@@ -622,7 +646,6 @@
         });
 
         setStatus("ok", "Hubs cargados correctamente.");
-        showToast("ok", "Carga exitosa", "Los hubs fueron cargados correctamente.");
       } catch (err) {
         console.error(err);
         setStatus("error", "Error cargando hubs: " + err.message);
@@ -640,7 +663,9 @@
 
       hubSeleccionado = value;
       hubSelected.textContent = value;
-      hubSelect.disabled = true;
+
+      hubSelection.classList.add("hidden");
+      hubDisplay.classList.add("show");
 
       setStatus("ok", "Hub confirmado: " + value);
       showToast("ok", "Hub confirmado", `El hub de atención quedó definido como ${value}.`);
@@ -756,3 +781,4 @@
   </script>
 </body>
 </html>
+
