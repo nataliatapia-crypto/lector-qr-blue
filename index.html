@@ -5,41 +5,536 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registro QR Hub</title>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
   <style>
-    body{font-family:Arial,sans-serif;background:#f4f7fb;margin:0;padding:20px}
-    .container{max-width:900px;margin:auto;background:#fff;padding:24px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
-    h1{margin-top:0}
-    label{display:block;margin:18px 0 8px;font-weight:700}
-    select,button{width:100%;padding:14px;border:none;border-radius:12px;font-weight:700;font-size:16px}
-    select{background:#eef3f8}
-    button{background:#0b2a4a;color:#fff;cursor:pointer;margin-top:12px}
-    #reader{margin-top:20px;min-height:260px}
-    .status{margin-top:20px;padding:18px;border-radius:12px}
-    .ok{background:#e8f7f1}
-    .error{background:#fdecec}
-    .warn{background:#fff4e5}
-    .muted{color:#6b7280}
+    :root{
+      --blue:#0b3aa8;
+      --blue-dark:#0a2c73;
+      --blue-soft:#eaf2ff;
+      --sky:#57c8f2;
+      --orange:#ff7f3f;
+      --white:#ffffff;
+      --text:#10213a;
+      --muted:#6f7d95;
+      --line:#dfe7f3;
+      --success:#17a36b;
+      --success-bg:#e8f8f1;
+      --warning:#d98200;
+      --warning-bg:#fff4e5;
+      --error:#d93025;
+      --error-bg:#fdeceb;
+      --shadow:0 18px 42px rgba(10,44,115,.18);
+      --radius-xl:28px;
+      --radius-lg:18px;
+      --radius-md:14px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      background:
+        linear-gradient(90deg, rgba(24,177,233,.82) 0%, rgba(13,72,193,.88) 58%, rgba(126,80,170,.62) 100%),
+        url("https://drive.google.com/uc?export=view&id=10_Rh1eQBghbUdX9L58m4p6N4Cuk3niFU") center center / cover no-repeat fixed;
+      padding:32px 20px;
+    }
+
+    .page{
+      max-width:1200px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap:28px;
+      align-items:stretch;
+      min-height:calc(100vh - 64px);
+    }
+
+    .hero{
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:20px 10px 20px 6px;
+      color:#fff;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:22px;
+    }
+
+    .brand-mark{
+      width:62px;
+      height:62px;
+      border-radius:18px;
+      background:rgba(255,255,255,.12);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:34px;
+      font-weight:800;
+      border:1px solid rgba(255,255,255,.16);
+      backdrop-filter: blur(4px);
+    }
+
+    .brand-text{
+      line-height:1.05;
+    }
+
+    .brand-text strong{
+      display:block;
+      font-size:38px;
+      font-weight:800;
+      letter-spacing:-1px;
+    }
+
+    .brand-text span{
+      font-size:16px;
+      opacity:.92;
+      font-weight:700;
+    }
+
+    .hero-copy{
+      margin-top:34px;
+      max-width:560px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.18);
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:.4px;
+      margin-bottom:18px;
+      backdrop-filter: blur(6px);
+    }
+
+    .hero h1{
+      margin:0 0 14px;
+      font-size:56px;
+      line-height:0.98;
+      letter-spacing:-1.8px;
+    }
+
+    .hero p{
+      margin:0;
+      max-width:500px;
+      font-size:21px;
+      line-height:1.45;
+      color:rgba(255,255,255,.96);
+    }
+
+    .hero-foot{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top:34px;
+    }
+
+    .pill{
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.18);
+      color:#fff;
+      padding:12px 16px;
+      border-radius:999px;
+      font-size:14px;
+      font-weight:700;
+      backdrop-filter: blur(5px);
+    }
+
+    .card{
+      background:rgba(255,255,255,.94);
+      border:1px solid rgba(255,255,255,.65);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      padding:24px;
+      align-self:center;
+      backdrop-filter: blur(10px);
+    }
+
+    .card-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:18px;
+    }
+
+    .card-title{
+      margin:0;
+      font-size:34px;
+      line-height:1;
+      letter-spacing:-1px;
+      color:var(--blue-dark);
+    }
+
+    .badge{
+      background:var(--orange);
+      color:#fff;
+      border-radius:999px;
+      padding:10px 14px;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .subtext{
+      margin:0 0 20px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.5;
+    }
+
+    .section{
+      margin-bottom:18px;
+    }
+
+    .label{
+      display:block;
+      margin:0 0 8px;
+      font-weight:800;
+      color:var(--blue-dark);
+      font-size:15px;
+    }
+
+    .field-row{
+      display:flex;
+      gap:10px;
+    }
+
+    .select-wrap{
+      position:relative;
+      flex:1;
+    }
+
+    .select-wrap::after{
+      content:"⌄";
+      position:absolute;
+      right:16px;
+      top:50%;
+      transform:translateY(-50%);
+      color:#58739c;
+      font-size:20px;
+      pointer-events:none;
+    }
+
+    select{
+      appearance:none;
+      width:100%;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      border-radius:16px;
+      padding:16px 46px 16px 16px;
+      font-size:16px;
+      font-weight:700;
+      outline:none;
+      transition:.2s ease;
+    }
+
+    select:focus{
+      border-color:#6da8ff;
+      box-shadow:0 0 0 4px rgba(43,118,255,.12);
+    }
+
+    .hub-button-row{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    button{
+      border:none;
+      border-radius:16px;
+      padding:15px 18px;
+      font-size:16px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .btn-primary{
+      background:var(--blue);
+      color:#fff;
+      width:100%;
+      box-shadow:0 10px 20px rgba(11,58,168,.18);
+    }
+
+    .btn-primary:hover{ transform:translateY(-1px); }
+
+    .btn-secondary{
+      background:#eef4fb;
+      color:var(--blue-dark);
+      width:100%;
+    }
+
+    .hub-display{
+      margin-top:14px;
+      background:linear-gradient(180deg,#eef5ff,#f7faff);
+      border:1px solid #dbe7fb;
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .hub-display small{
+      display:block;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.5px;
+      color:#6c84a8;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+
+    .hub-value{
+      font-size:24px;
+      font-weight:900;
+      color:var(--blue-dark);
+      letter-spacing:-.5px;
+    }
+
+    .scanner-shell{
+      margin-top:18px;
+      border-radius:22px;
+      overflow:hidden;
+      background:#f7faff;
+      border:1px solid #e3ebf8;
+      padding:16px;
+    }
+
+    #reader{
+      width:100%;
+      min-height:280px;
+      border-radius:18px;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at center, rgba(87,200,242,.08), transparent 60%),
+        #eef4fb;
+    }
+
+    .reader-note{
+      margin-top:10px;
+      font-size:13px;
+      color:#73829b;
+      line-height:1.45;
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .toast{
+      position:fixed;
+      top:22px;
+      right:22px;
+      min-width:300px;
+      max-width:420px;
+      border-radius:18px;
+      padding:16px 18px;
+      box-shadow:0 20px 38px rgba(0,0,0,.18);
+      z-index:9999;
+      opacity:0;
+      transform:translateY(-12px);
+      pointer-events:none;
+      transition:.24s ease;
+      border:1px solid transparent;
+      backdrop-filter: blur(10px);
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .toast strong{
+      display:block;
+      font-size:16px;
+      margin-bottom:4px;
+    }
+
+    .toast span{
+      display:block;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .toast.ok{
+      background:rgba(232,248,241,.96);
+      color:#0f6e4a;
+      border-color:#cfeedd;
+    }
+
+    .toast.warn{
+      background:rgba(255,244,229,.97);
+      color:#8e5e00;
+      border-color:#f2dcaf;
+    }
+
+    .toast.error{
+      background:rgba(253,236,235,.97);
+      color:#a42820;
+      border-color:#f0c6c2;
+    }
+
+    .status-panel{
+      margin-top:16px;
+      border-radius:18px;
+      padding:16px;
+      font-size:14px;
+      line-height:1.5;
+      border:1px solid var(--line);
+      background:#f8fbff;
+      color:#59708f;
+    }
+
+    .status-panel.ok{
+      background:var(--success-bg);
+      color:#0f6e4a;
+      border-color:#cce9db;
+    }
+
+    .status-panel.warn{
+      background:var(--warning-bg);
+      color:#8e5e00;
+      border-color:#f0dbaf;
+    }
+
+    .status-panel.error{
+      background:var(--error-bg);
+      color:#a42820;
+      border-color:#efc7c3;
+    }
+
+    .status-panel.muted{
+      background:#f8fbff;
+      color:#62758f;
+      border-color:#dfe8f5;
+    }
+
+    @media (max-width: 980px){
+      .page{
+        grid-template-columns:1fr;
+      }
+      .hero{
+        min-height:auto;
+        padding:8px 0 0;
+      }
+      .hero h1{
+        font-size:44px;
+      }
+      .card{
+        padding:20px;
+      }
+    }
+
+    @media (max-width: 640px){
+      body{
+        padding:14px;
+      }
+      .hero h1{
+        font-size:36px;
+      }
+      .card-title{
+        font-size:28px;
+      }
+      .actions{
+        grid-template-columns:1fr;
+      }
+      .toast{
+        left:14px;
+        right:14px;
+        min-width:auto;
+        max-width:none;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Registro QR</h1>
+  <div class="page">
+    <section class="hero">
+      <div>
+        <div class="brand">
+          <div class="brand-mark">B</div>
+          <div class="brand-text">
+            <strong>Blue</strong>
+            <span>express COPEC</span>
+          </div>
+        </div>
 
-    <label for="hubSelect">Selecciona Hub</label>
-    <select id="hubSelect">
-      <option value="">Cargando hubs...</option>
-    </select>
+        <div class="hero-copy">
+          <div class="eyebrow">REGISTRO DE INGRESO · HUBS</div>
+          <h1>Escanea y registra tu operación</h1>
+          <p>
+            Selecciona el hub, confirma la atención y registra el ingreso del courier
+            escaneando su código QR.
+          </p>
+        </div>
+      </div>
 
-    <button id="btnConfirmHub">Confirmar hub</button>
+      <div class="hero-foot">
+        <div class="pill">Registro en línea</div>
+        <div class="pill">Validación por hub</div>
+        <div class="pill">Lectura QR</div>
+      </div>
+    </section>
 
-    <p id="hubSelected">Hub no definido</p>
+    <section class="card">
+      <div class="card-head">
+        <h2 class="card-title">Registro QR</h2>
+        <div class="badge">Blue Express</div>
+      </div>
 
-    <div id="reader"></div>
+      <p class="subtext">
+        Confirma el hub de atención y luego inicia el lector. El sistema validará la ruta y evitará registros duplicados.
+      </p>
 
-    <button id="btnStart">Iniciar escáner</button>
-    <button id="btnStop">Detener escáner</button>
+      <div class="section">
+        <label class="label" for="hubSelect">Selecciona Hub</label>
+        <div class="select-wrap">
+          <select id="hubSelect">
+            <option value="">Cargando hubs...</option>
+          </select>
+        </div>
 
-    <div id="status" class="status muted">Esperando acción...</div>
+        <div class="hub-button-row">
+          <button id="btnConfirmHub" class="btn-primary">Confirmar hub</button>
+        </div>
+
+        <div class="hub-display">
+          <small>Hub de atención</small>
+          <div id="hubSelected" class="hub-value">Hub no definido</div>
+        </div>
+      </div>
+
+      <div class="scanner-shell">
+        <div id="reader"></div>
+        <div class="reader-note">
+          Usa la cámara para leer el QR del courier. Si el registro fue exitoso, la alerta aparecerá arriba y desaparecerá sola.
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btnStart" class="btn-primary">Iniciar escáner</button>
+        <button id="btnStop" class="btn-secondary">Detener escáner</button>
+      </div>
+
+      <div id="status" class="status-panel muted">Esperando acción...</div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast">
+    <strong id="toastTitle">Estado</strong>
+    <span id="toastMessage">Mensaje</span>
   </div>
 
   <script>
@@ -49,18 +544,38 @@
     let hubSeleccionado = "";
     let isScanning = false;
     let isProcessing = false;
+    let toastTimer = null;
 
     const hubSelect = document.getElementById("hubSelect");
     const hubSelected = document.getElementById("hubSelected");
     const statusEl = document.getElementById("status");
+    const toastEl = document.getElementById("toast");
+    const toastTitleEl = document.getElementById("toastTitle");
+    const toastMessageEl = document.getElementById("toastMessage");
 
     document.getElementById("btnConfirmHub").addEventListener("click", confirmHub);
     document.getElementById("btnStart").addEventListener("click", startScanner);
     document.getElementById("btnStop").addEventListener("click", stopScanner);
 
     function setStatus(type, msg) {
-      statusEl.className = "status " + type;
+      statusEl.className = "status-panel " + type;
       statusEl.textContent = msg;
+    }
+
+    function showToast(type, title, message, duration = 3200) {
+      clearTimeout(toastTimer);
+
+      toastEl.className = "toast " + type;
+      toastTitleEl.textContent = title;
+      toastMessageEl.textContent = message;
+
+      requestAnimationFrame(() => {
+        toastEl.classList.add("show");
+      });
+
+      toastTimer = setTimeout(() => {
+        toastEl.classList.remove("show");
+      }, duration);
     }
 
     function jsonp(url) {
@@ -85,7 +600,6 @@
 
         const separator = url.includes("?") ? "&" : "?";
         script.src = `${url}${separator}callback=${callbackName}`;
-
         document.body.appendChild(script);
       });
     }
@@ -93,7 +607,6 @@
     async function cargarHubs() {
       try {
         setStatus("warn", "Cargando hubs...");
-
         const data = await jsonp(`${APPS_SCRIPT_URL}?action=hubs`);
 
         if (!data.ok || !Array.isArray(data.hubs)) {
@@ -109,9 +622,11 @@
         });
 
         setStatus("ok", "Hubs cargados correctamente.");
+        showToast("ok", "Carga exitosa", "Los hubs fueron cargados correctamente.");
       } catch (err) {
         console.error(err);
         setStatus("error", "Error cargando hubs: " + err.message);
+        showToast("error", "Error cargando hubs", err.message);
       }
     }
 
@@ -119,18 +634,22 @@
       const value = hubSelect.value;
       if (!value) {
         setStatus("warn", "Debes seleccionar un hub.");
+        showToast("warn", "Hub requerido", "Debes seleccionar un hub antes de continuar.");
         return;
       }
 
       hubSeleccionado = value;
-      hubSelected.textContent = "Hub: " + value;
+      hubSelected.textContent = value;
       hubSelect.disabled = true;
+
       setStatus("ok", "Hub confirmado: " + value);
+      showToast("ok", "Hub confirmado", `El hub de atención quedó definido como ${value}.`);
     }
 
     async function startScanner() {
       if (!hubSeleccionado) {
         setStatus("warn", "Selecciona y confirma un hub primero.");
+        showToast("warn", "Hub no definido", "Selecciona y confirma un hub antes de iniciar el escáner.");
         return;
       }
 
@@ -142,6 +661,7 @@
 
         if (!cameras.length) {
           setStatus("error", "No se detectaron cámaras.");
+          showToast("error", "Sin cámara", "No se detectaron cámaras disponibles en el dispositivo.");
           return;
         }
 
@@ -153,9 +673,12 @@
 
         isScanning = true;
         setStatus("ok", "Escáner iniciado.");
+        showToast("ok", "Escáner iniciado", "La cámara está activa y lista para leer el QR.");
       } catch (err) {
         console.error(err);
-        setStatus("error", "No fue posible iniciar cámara: " + (err.message || err));
+        const msg = "No fue posible iniciar cámara: " + (err.message || err);
+        setStatus("error", msg);
+        showToast("error", "Error de cámara", msg, 4200);
       }
     }
 
@@ -193,6 +716,7 @@
         }
 
         setStatus("warn", "Procesando registro...");
+        showToast("warn", "Procesando", "Validando datos del courier...");
 
         const qs = new URLSearchParams({
           action: "register",
@@ -204,15 +728,25 @@
 
         const result = await jsonp(`${APPS_SCRIPT_URL}?${qs.toString()}`);
 
-        setStatus(
+        const type =
           result.status === "success" ? "ok" :
-          result.status === "duplicate" ? "warn" : "error",
-          result.message || "Respuesta sin mensaje."
-        );
+          result.status === "duplicate" ? "warn" : "error";
+
+        setStatus(type, result.message || "Respuesta sin mensaje.");
+
+        if (result.status === "success") {
+          showToast("ok", "Registro exitoso", result.message || "El courier fue registrado correctamente.");
+        } else if (result.status === "duplicate") {
+          showToast("warn", "Courier ya registrado", result.message || "Este courier ya había sido registrado.");
+        } else {
+          showToast("error", "No fue posible registrar", result.message || "Ocurrió un problema al registrar.", 4200);
+        }
 
       } catch (err) {
         console.error(err);
-        setStatus("error", "Error procesando QR: " + err.message);
+        const msg = "Error procesando QR: " + err.message;
+        setStatus("error", msg);
+        showToast("error", "QR inválido", msg, 4200);
       } finally {
         setTimeout(() => { isProcessing = false; }, 1200);
       }
