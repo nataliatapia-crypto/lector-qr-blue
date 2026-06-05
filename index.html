@@ -3,16 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title></title>
+  <title>Ingreso QR</title>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
   <style>
     :root{
       --blue:#0b3aa8;
       --blue-dark:#0a2c73;
-      --blue-soft:#eaf2ff;
-      --sky:#57c8f2;
-      --orange:#ff7f3f;
       --white:#ffffff;
       --text:#10213a;
       --muted:#6f7d95;
@@ -25,8 +22,6 @@
       --error-bg:#fdeceb;
       --shadow:0 18px 42px rgba(10,44,115,.18);
       --radius-xl:28px;
-      --radius-lg:18px;
-      --radius-md:14px;
     }
 
     *{box-sizing:border-box}
@@ -36,54 +31,47 @@
       width:100%;
       height:100%;
       overflow:hidden;
-    }
-
-    body{
-      font-family: Arial, Helvetica, sans-serif;
+      font-family:Arial, Helvetica, sans-serif;
       color:var(--text);
       background:
         linear-gradient(90deg, rgba(24,177,233,.82) 0%, rgba(13,72,193,.88) 58%, rgba(126,80,170,.62) 100%),
         url("https://drive.google.com/uc?export=view&id=10_Rh1eQBghbUdX9L58m4p6N4Cuk3niFU") center center / cover no-repeat fixed;
-      padding:10px 18px;
     }
 
+    body{padding:14px 18px;}
+
     .page{
-      max-width:1200px;
-      height:calc(100vh - 20px);
+      width:min(1200px, 100%);
+      height:calc(100vh - 28px);
       margin:0 auto;
       display:grid;
-      grid-template-columns: 1.05fr 0.95fr;
+      grid-template-columns:1.04fr .96fr;
       gap:24px;
       align-items:center;
     }
 
     .hero{
+      height:100%;
+      min-height:0;
       display:flex;
       flex-direction:column;
-      justify-content:space-between;
+      justify-content:center;
       color:#fff;
-      padding:8px 8px 8px 0;
-    }
-
-    .topbar{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      margin-bottom:16px;
+      padding:4px 10px 4px 0;
     }
 
     .brand{
-      width:130px;
-      min-width:130px;
-      height:54px;
+      width:145px;
+      height:62px;
       display:flex;
       align-items:center;
       justify-content:center;
-      background:rgba(255,255,255,.08);
+      background:rgba(255,255,255,.10);
       border:1px solid rgba(255,255,255,.16);
       border-radius:18px;
-      backdrop-filter: blur(6px);
-      padding:8px 12px;
+      backdrop-filter:blur(6px);
+      padding:10px 14px;
+      margin-bottom:26px;
     }
 
     .brand img{
@@ -93,87 +81,64 @@
       display:block;
     }
 
-    .topbar-title{
-      font-size:18px;
-      font-weight:800;
-      letter-spacing:.2px;
-      color:#fff;
-    }
-
-    .hero-copy{
-      max-width:620px;
-    }
+    .hero-copy{max-width:620px;}
 
     .eyebrow{
       display:inline-block;
-      background:rgba(255,255,255,.12);
+      background:rgba(255,255,255,.14);
       border:1px solid rgba(255,255,255,.18);
-      padding:8px 12px;
+      padding:9px 14px;
       border-radius:999px;
       font-size:13px;
-      font-weight:700;
-      letter-spacing:.4px;
-      margin-bottom:12px;
-      backdrop-filter: blur(6px);
+      font-weight:800;
+      letter-spacing:.3px;
+      margin-bottom:18px;
+      backdrop-filter:blur(6px);
     }
 
     .hero h1{
-      margin:0 0 10px;
-      font-size:38px;
-      line-height:.95;
-      letter-spacing:-1.7px;
+      margin:0 0 12px;
+      font-size:46px;
+      line-height:.98;
+      letter-spacing:-1.5px;
+      font-weight:900;
     }
 
     .hero p{
       margin:0;
-      max-width:500px;
-      font-size:16px;
-      line-height:1.25;
+      max-width:560px;
+      font-size:18px;
+      line-height:1.35;
       color:rgba(255,255,255,.96);
     }
 
     .hero-qr{
-  margin-top:20px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-}
-
-.hero-qr-image{
-  width:155px;
-  height:155px;
-  background:#fff;
-  padding:10px;
-  border-radius:6px;
-  box-shadow:0 10px 25px rgba(0,0,0,.15);
-}
-
-.hero-qr-text{
-  margin-top:10px;
-  font-size:15px;
-  font-weight:800;
-  line-height:1.2;
-  color:#fff;
-  text-align:center;
-}
-
-    .hero-foot{
+      margin-top:34px;
       display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:28px;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      max-width:420px;
     }
 
-    .pill{
-      background:rgba(255,255,255,.12);
-      border:1px solid rgba(255,255,255,.18);
+    .hero-qr-image{
+      width:182px;
+      height:182px;
+      background:#fff;
+      padding:8px;
+      border-radius:8px;
+      object-fit:contain;
+      box-shadow:0 10px 25px rgba(0,0,0,.15);
+    }
+
+    .hero-qr-text{
+      margin-top:10px;
+      font-size:17px;
+      font-weight:900;
+      line-height:1.12;
       color:#fff;
-      padding:11px 15px;
-      border-radius:999px;
-      font-size:14px;
-      font-weight:700;
-      backdrop-filter: blur(5px);
+      text-align:center;
     }
 
     .card{
@@ -181,51 +146,23 @@
       border:1px solid rgba(255,255,255,.7);
       border-radius:var(--radius-xl);
       box-shadow:var(--shadow);
-      padding:16px;
-      backdrop-filter: blur(10px);
+      padding:18px;
+      backdrop-filter:blur(10px);
+      max-height:calc(100vh - 40px);
+      overflow:hidden;
     }
 
-    .card-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      margin-bottom:12px;
-    }
-
-    .card-title{
-      margin:0;
-      font-size:32px;
-      line-height:1;
-      letter-spacing:-1px;
-      color:var(--blue-dark);
-    }
-
-   
-
-    .subtext{
-      margin:0 0 16px;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.5;
-    }
-
-    .section{
-      margin-bottom:10px;
-    }
+    .section{margin-bottom:12px;}
 
     .label{
       display:block;
       margin:0 0 8px;
-      font-weight:800;
+      font-weight:900;
       color:var(--blue-dark);
       font-size:15px;
     }
 
-    .select-wrap{
-      position:relative;
-      flex:1;
-    }
+    .select-wrap{position:relative; flex:1;}
 
     .select-wrap::after{
       content:"⌄";
@@ -245,38 +182,22 @@
       background:#fff;
       color:var(--text);
       border-radius:16px;
-      padding:12px 42px 12px 14px;
+      padding:14px 46px 14px 16px;
       font-size:16px;
-      font-weight:700;
+      font-weight:800;
       outline:none;
-      transition:.2s ease;
     }
 
-    select:focus{
-      border-color:#6da8ff;
-      box-shadow:0 0 0 4px rgba(43,118,255,.12);
-    }
+    .hub-selection.hidden{display:none;}
 
-    .hub-selection{
-      transition:.25s ease;
-    }
-
-    .hub-selection.hidden{
-      display:none;
-    }
-
-    .hub-button-row{
-      display:flex;
-      gap:10px;
-      margin-top:10px;
-    }
+    .hub-button-row{display:flex; gap:10px; margin-top:12px;}
 
     button{
       border:none;
       border-radius:16px;
-      padding:12px 16px;
+      padding:14px 18px;
       font-size:16px;
-      font-weight:800;
+      font-weight:900;
       cursor:pointer;
       transition:.18s ease;
     }
@@ -288,8 +209,6 @@
       box-shadow:0 10px 20px rgba(11,58,168,.18);
     }
 
-    .btn-primary:hover{ transform:translateY(-1px); }
-
     .btn-secondary{
       background:#eef4fb;
       color:var(--blue-dark);
@@ -298,24 +217,22 @@
 
     .hub-display{
       display:none;
-      margin:6px 0 10px;
+      margin:0 0 12px;
       background:linear-gradient(180deg,#eef5ff,#f7faff);
       border:1px solid #dbe7fb;
       border-radius:14px;
-      padding:8px 12px;
+      padding:10px 14px;
       align-items:center;
       justify-content:space-between;
       gap:10px;
     }
 
-    .hub-display.show{
-      display:flex;
-    }
+    .hub-display.show{display:flex;}
 
     .hub-display small{
       display:block;
       font-size:12px;
-      font-weight:800;
+      font-weight:900;
       letter-spacing:.5px;
       color:#6c84a8;
       text-transform:uppercase;
@@ -335,43 +252,56 @@
       border-radius:999px;
       padding:5px 10px;
       font-size:12px;
-      font-weight:800;
+      font-weight:900;
       white-space:nowrap;
     }
 
     .scanner-shell{
       margin-top:8px;
-      border-radius:18px;
+      border-radius:22px;
       overflow:hidden;
       background:#f7faff;
       border:1px solid #e3ebf8;
-      padding:10px;
+      padding:12px;
     }
 
     #reader{
       width:100%;
-      height:190px;
       min-height:190px;
       border-radius:18px;
       overflow:hidden;
-      background:
-        radial-gradient(circle at center, rgba(87,200,242,.08), transparent 60%),
-        #eef4fb;
+      background:radial-gradient(circle at center, rgba(87,200,242,.08), transparent 60%), #eef4fb;
     }
 
     .reader-note{
       margin-top:8px;
-      font-size:12px;
+      font-size:13px;
       color:#73829b;
-      line-height:1.45;
+      line-height:1.35;
     }
 
     .actions{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:12px;
-      margin-top:10px;
+      margin-top:12px;
     }
+
+    .status-panel{
+      margin-top:12px;
+      border-radius:18px;
+      padding:12px 14px;
+      font-size:14px;
+      line-height:1.35;
+      border:1px solid var(--line);
+      background:#f8fbff;
+      color:#59708f;
+    }
+
+    .status-panel.ok{background:var(--success-bg); color:#0f6e4a; border-color:#cce9db;}
+    .status-panel.warn{background:var(--warning-bg); color:#8e5e00; border-color:#f0dbaf;}
+    .status-panel.error{background:var(--error-bg); color:#a42820; border-color:#efc7c3;}
+    .status-panel.muted{background:#f8fbff; color:#62758f; border-color:#dfe8f5;}
 
     .toast{
       position:fixed;
@@ -388,191 +318,70 @@
       pointer-events:none;
       transition:.24s ease;
       border:1px solid transparent;
-      backdrop-filter: blur(10px);
+      backdrop-filter:blur(10px);
     }
 
-    .toast.show{
-      opacity:1;
-      transform:translateY(0);
+    .toast.show{opacity:1; transform:translateY(0);}
+    .toast strong{display:block; font-size:16px; margin-bottom:4px;}
+    .toast span{display:block; font-size:14px; line-height:1.45;}
+    .toast.ok{background:rgba(232,248,241,.96); color:#0f6e4a; border-color:#cfeedd;}
+    .toast.warn{background:rgba(255,244,229,.97); color:#8e5e00; border-color:#f2dcaf;}
+    .toast.error{background:rgba(253,236,235,.97); color:#a42820; border-color:#f0c6c2;}
+
+    @media (max-height:760px){
+      .brand{width:130px; height:54px; margin-bottom:18px;}
+      .eyebrow{margin-bottom:12px; padding:8px 12px; font-size:12px;}
+      .hero h1{font-size:40px;}
+      .hero p{font-size:16px;}
+      .hero-qr{margin-top:24px;}
+      .hero-qr-image{width:150px; height:150px;}
+      .hero-qr-text{font-size:15px;}
+      #reader{min-height:155px;}
+      .scanner-shell{padding:10px;}
+      button{padding:12px 14px;}
+      .status-panel{padding:10px 12px;}
     }
 
-    .toast strong{
-      display:block;
-      font-size:16px;
-      margin-bottom:4px;
+    @media (max-width:980px){
+      html, body{height:auto; overflow:auto;}
+      .page{height:auto; min-height:calc(100vh - 28px); grid-template-columns:1fr;}
+      .card{max-height:none; overflow:visible;}
+      .hero h1{font-size:38px;}
+      .hero-qr-image{width:160px; height:160px;}
     }
-
-    .toast span{
-      display:block;
-      font-size:14px;
-      line-height:1.45;
-    }
-
-    .toast.ok{
-      background:rgba(232,248,241,.96);
-      color:#0f6e4a;
-      border-color:#cfeedd;
-    }
-
-    .toast.warn{
-      background:rgba(255,244,229,.97);
-      color:#8e5e00;
-      border-color:#f2dcaf;
-    }
-
-    .toast.error{
-      background:rgba(253,236,235,.97);
-      color:#a42820;
-      border-color:#f0c6c2;
-    }
-
-    .status-panel{
-      margin-top:10px;
-      border-radius:18px;
-      padding:12px 14px;
-      font-size:14px;
-      line-height:1.5;
-      border:1px solid var(--line);
-      background:#f8fbff;
-      color:#59708f;
-    }
-
-    .status-panel.ok{
-      background:var(--success-bg);
-      color:#0f6e4a;
-      border-color:#cce9db;
-    }
-
-    .status-panel.warn{
-      background:var(--warning-bg);
-      color:#8e5e00;
-      border-color:#f0dbaf;
-    }
-
-    .status-panel.error{
-      background:var(--error-bg);
-      color:#a42820;
-      border-color:#efc7c3;
-    }
-
-    .status-panel.muted{
-      background:#f8fbff;
-      color:#62758f;
-      border-color:#dfe8f5;
-    }
-
-    @media (max-width: 980px){
-      .page{
-        grid-template-columns:1fr;
-      }
-      .hero{
-        min-height:auto;
-        padding:4px 0 0;
-      }
-      .hero h1{
-        font-size:42px;
-      }
-    }
-
-    @media (max-width: 640px){
-      body{
-        padding:14px;
-      }
-      .hero h1{
-        font-size:34px;
-      }
-      .card-title{
-        font-size:28px;
-      }
-      .actions{
-        grid-template-columns:1fr;
-      }
-      .toast{
-        left:14px;
-        right:14px;
-        min-width:auto;
-        max-width:none;
-      }
-      .hub-display{
-        flex-direction:column;
-        align-items:flex-start;
-      }
-    }
-    .qr-section{
-  margin-top:28px;
-  padding-top:24px;
-  border-top:1px solid rgba(15,34,64,.12);
-  text-align:center;
-}
-
-.qr-image{
-  width:150px;
-  height:150px;
-  object-fit:contain;
-  background:#fff;
-  padding:6px;
-}
-
-.qr-text{
-  margin-top:10px;
-  font-size:16px;
-  line-height:1.12;
-  font-weight:800;
-  color:#475569;
-}
   </style>
 </head>
 <body>
   <div class="page">
     <section class="hero">
-      <div>
-        <header class="topbar">
-          <div class="brand">
-            <img
-              src="https://lh3.googleusercontent.com/d/1mGJb6w6nJ-nxW3LwO0_Cts-YyDbyw4wS"
-              alt="Blue Express"
-              onerror="this.style.display='none';"
-            />
-          </div>
-          
-        </header>
-
-        <div class="hero-copy">
-  <div class="eyebrow">REGISTRO DE INGRESO · HUBS</div>
-
-  <h1>
-    Bienvenido!<br>
-    Escanea y registra tu ingreso
-  </h1>
-
-  <p>
-    Selecciona el hub una sola vez, confírmalo y luego trabaja directo con el lector QR.
-  </p>
-
-  <div class="hero-qr">
-    <img
-      class="hero-qr-image"
-      src="https://lh3.googleusercontent.com/d/1lMAsP4LBGE_U0y2LqfCCWGzcpiSx5sgZ"
-      alt="QR de registro"
-    />
-
-    <div class="hero-qr-text">
-      ¿No tienes tu código QR?<br>
-      Escanea y regístrate aquí
-    </div>
-  </div>
-</div>
+      <div class="brand">
+        <img
+          src="https://lh3.googleusercontent.com/d/1mGJb6w6nJ-nxW3LwO0_Cts-YyDbyw4wS"
+          alt="Blue Express"
+          onerror="this.style.display='none';"
+        />
       </div>
 
-      
+      <div class="hero-copy">
+        <div class="eyebrow">REGISTRO DE INGRESO · HUBS</div>
+        <h1>Bienvenido!<br>Escanea y registra tu ingreso</h1>
+        <p>Selecciona el hub una sola vez, confírmalo y luego trabaja directo con el lector QR.</p>
+
+        <div class="hero-qr">
+          <img
+            class="hero-qr-image"
+            src="https://lh3.googleusercontent.com/d/1lMAsP4LBGE_U0y2LqfCCWGzcpiSx5sgZ"
+            alt="QR de registro"
+          />
+          <div class="hero-qr-text">
+            ¿No tienes tu código QR?<br>
+            Escanea y regístrate aquí
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="card">
-      <div class="card-head">
-      </div>
-
-      </p>
-
       <div id="hubSelection" class="hub-selection section">
         <label class="label" for="hubSelect">Selecciona Hub</label>
         <div class="select-wrap">
@@ -580,7 +389,6 @@
             <option value="">Cargando hubs...</option>
           </select>
         </div>
-
         <div class="hub-button-row">
           <button id="btnConfirmHub" class="btn-primary">Confirmar hub</button>
         </div>
@@ -606,9 +414,7 @@
         <button id="btnStop" class="btn-secondary">Detener escáner</button>
       </div>
 
-      <div id="status" class="status-panel muted">
-        Esperando acción...
-      </div>
+      <div id="status" class="status-panel muted">Esperando acción...</div>
     </section>
   </div>
 
@@ -617,7 +423,6 @@
     <span id="toastMessage">Mensaje</span>
   </div>
 
-  
   <script>
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPXCRbbJB3eC2DLP3QLEEDMDccMCFBTmB6ncMBbSnOgk5s4xnObefk2auRV8i50VQB/exec";
 
@@ -647,18 +452,11 @@
 
     function showToast(type, title, message, duration = 3200) {
       clearTimeout(toastTimer);
-
       toastEl.className = "toast " + type;
       toastTitleEl.textContent = title;
       toastMessageEl.textContent = message;
-
-      requestAnimationFrame(() => {
-        toastEl.classList.add("show");
-      });
-
-      toastTimer = setTimeout(() => {
-        toastEl.classList.remove("show");
-      }, duration);
+      requestAnimationFrame(() => toastEl.classList.add("show"));
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), duration);
     }
 
     function jsonp(url) {
@@ -722,10 +520,8 @@
 
       hubSeleccionado = value;
       hubSelected.textContent = value;
-
       hubSelection.classList.add("hidden");
       hubDisplay.classList.add("show");
-
       setStatus("ok", "Hub confirmado: " + value);
       showToast("ok", "Hub confirmado", `El hub de atención quedó definido como ${value}.`);
     }
@@ -749,12 +545,7 @@
           return;
         }
 
-        await scanner.start(
-          cameras[0].id,
-          { fps: 10, qrbox: 250 },
-          onScanSuccess
-        );
-
+        await scanner.start(cameras[0].id, { fps: 10, qrbox: 250 }, onScanSuccess);
         isScanning = true;
         setStatus("ok", "Escáner iniciado.");
         showToast("ok", "Escáner iniciado", "La cámara está activa y lista para leer el QR.");
@@ -787,10 +578,8 @@
 
       try {
         await stopScanner();
-
         const url = new URL(text);
         const params = new URLSearchParams(url.search);
-
         const rut = (params.get("rut") || "").trim();
         const nombre = (params.get("nombre") || "").trim();
         const ruta = (params.get("ruta") || "").trim();
@@ -811,11 +600,7 @@
         });
 
         const result = await jsonp(`${APPS_SCRIPT_URL}?${qs.toString()}`);
-
-        const type =
-          result.status === "success" ? "ok" :
-          result.status === "duplicate" ? "warn" : "error";
-
+        const type = result.status === "success" ? "ok" : result.status === "duplicate" ? "warn" : "error";
         setStatus(type, result.message || "Respuesta sin mensaje.");
 
         if (result.status === "success") {
@@ -825,7 +610,6 @@
         } else {
           showToast("error", "No fue posible registrar", result.message || "Ocurrió un problema al registrar.", 4200);
         }
-
       } catch (err) {
         console.error(err);
         const msg = "Error procesando QR: " + err.message;
