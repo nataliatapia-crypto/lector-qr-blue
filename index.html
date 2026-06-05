@@ -127,6 +127,30 @@
       color:rgba(255,255,255,.96);
     }
 
+    .hero-qr{
+  margin-top:40px;
+  text-align:center;
+  max-width:320px;
+}
+
+.hero-qr-image{
+  width:220px;
+  height:220px;
+  background:#fff;
+  padding:8px;
+  border-radius:12px;
+  object-fit:contain;
+  box-shadow:0 12px 30px rgba(0,0,0,.15);
+}
+
+.hero-qr-text{
+  margin-top:16px;
+  font-size:18px;
+  font-weight:800;
+  line-height:1.25;
+  color:#fff;
+}
+
     .hero-foot{
       display:flex;
       gap:12px;
@@ -506,13 +530,30 @@
         </header>
 
         <div class="hero-copy">
-          <div class="eyebrow">REGISTRO DE INGRESO · HUBS</div>
-          <h1>Bienvenido!
-            Escanea y registra tu ingreso</h1>
-          <p>
-            Selecciona el hub una sola vez, confírmalo y luego trabaja directo con el lector QR.
-          </p>
-        </div>
+  <div class="eyebrow">REGISTRO DE INGRESO · HUBS</div>
+
+  <h1>
+    Bienvenido!<br>
+    Escanea y registra tu ingreso
+  </h1>
+
+  <p>
+    Selecciona el hub una sola vez, confírmalo y luego trabaja directo con el lector QR.
+  </p>
+
+  <div class="hero-qr">
+    <img
+      class="hero-qr-image"
+      src="https://lh3.googleusercontent.com/d/1lMAsP4LBGE_U0y2LqfCCWGzcpiSx5sgZ"
+      alt="QR de registro"
+    />
+
+    <div class="hero-qr-text">
+      ¿No tienes tu código QR?<br>
+      Escanea y regístrate aquí
+    </div>
+  </div>
+</div>
       </div>
 
       
@@ -561,17 +602,7 @@
   Esperando acción...
 </div>
 
-<div class="qr-section">
-  <img
-    class="qr-image"
-    src="https://lh3.googleusercontent.com/d/1lMAsP4LBGE_U0y2LqfCCWGzcpiSx5sgZ"
-    alt="QR de registro"
-  />
-  <div class="qr-text">
-    ¿No tienes tu código QR?<br>
-    Escanea y regístrate aquí
-  </div>
-</div>
+
 
   <div id="toast" class="toast">
     <strong id="toastTitle">Estado</strong>
