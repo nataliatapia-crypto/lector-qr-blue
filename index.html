@@ -466,6 +466,28 @@
         align-items:flex-start;
       }
     }
+    .qr-section{
+  margin-top:28px;
+  padding-top:24px;
+  border-top:1px solid rgba(15,34,64,.12);
+  text-align:center;
+}
+
+.qr-image{
+  width:150px;
+  height:150px;
+  object-fit:contain;
+  background:#fff;
+  padding:6px;
+}
+
+.qr-text{
+  margin-top:10px;
+  font-size:16px;
+  line-height:1.12;
+  font-weight:800;
+  color:#475569;
+}
   </style>
 </head>
 <body>
@@ -544,6 +566,18 @@
     <span id="toastMessage">Mensaje</span>
   </div>
 
+<div class="qr-section">
+  <img
+    class="qr-image"
+    src="https://lh3.googleusercontent.com/d/1lMAsP4LBGE_U0y2LqfCCWGzcpiSx5sgZ"
+    alt="QR de registro"
+  />
+  <div class="qr-text">
+    ¿No tienes tu código QR?<br>
+    Escanea y regístrate aquí
+  </div>
+</div>
+  
   <script>
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPXCRbbJB3eC2DLP3QLEEDMDccMCFBTmB6ncMBbSnOgk5s4xnObefk2auRV8i50VQB/exec";
 
